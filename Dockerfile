@@ -1,12 +1,15 @@
 FROM centos:latest
 MAINTAINER chugh.varunhm@gmail.com
+RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
 RUN yum install -y httpd \
-zip \
-unzip
-ADD https://www.free-css.com/assets/files/free-css-templates/download/page247/kindle.zip/var/www/html
+        zip \
+        unzip
+COPY testapp.zip /var/www/html
+#COPY /home/ec2-user/testapp.zip /var/www/html
 WORKDIR /var/www/html
-RUN unzip kindle.zip
-RUN cp -rv markups-kindle/*
-RUN rm -rf _MACOSX markups-kindle kindle.zip 
-CMD ["/usr/sbin/httpd","-D", "FOREGROUND"]
+RUN unzip testapp.zip
+RUN cp -rv testapp/* .
+RUN rm -rf testapp.zip testapp
+CMD ["/usr/sbin/httpd", "-D", "FOREGROUND"]
 EXPOSE 80
